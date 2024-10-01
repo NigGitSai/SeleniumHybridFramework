@@ -7,6 +7,7 @@ public class MainPage {
 	HeaderPage header = null;
 	LoginPage loginpage = null;
 	HomePage homepage = null;
+	ProductsPage productPage = null;
 	
 	public MainPage (RemoteWebDriver driver)
 	{
@@ -39,6 +40,16 @@ public class MainPage {
 		}
 		return homepage;
 	}
+	
+	public ProductsPage productPage()
+	{
+		if(productPage == null)
+		{
+			productPage = new ProductsPage(driver);
+		}
+		return productPage;
+	}
+	
 	
 	
 }

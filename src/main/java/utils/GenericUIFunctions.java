@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -31,12 +32,16 @@ public class GenericUIFunctions extends Report {
 	String srcScreenshot;
 	byte[] byteArrScreenshot;
 	WebDriverWait wait;
+	Actions actions;
+	Select select;
+	WebElement firstSelectedOption;
 	public GenericUIFunctions(RemoteWebDriver driver)
 	{
 		this.driver = driver;
 		log = Logger.getLogger(GenericUIFunctions.class);
 		PropertyConfigurator.configure("./src/test/resources/config/log4j.properties");
 		wait = new WebDriverWait(driver, 20);
+		actions = new Actions(driver);
 	}
 	
 	public void click(WebElement ele,String objectName) throws IOException
@@ -76,7 +81,7 @@ public class GenericUIFunctions extends Report {
 		}
 	}
 	
-	public void verifyActualVsExpected(String expValue,String actValue,String verification) throws IOException
+	public void verifyActualVsExpected(Object expValue,Object actValue,String verification) throws IOException
 	{
 		try
 		{
@@ -111,6 +116,7 @@ public class GenericUIFunctions extends Report {
 		String actText="";
 		try
 		{
+			wait.until(ExpectedConditions.visibilityOf(ele));
 			actText= ele.getText();
 			log.info(objectName+" element Text fetched");
 			testStatus("info",objectName+" element Text fetched", "Not req");
@@ -228,4 +234,60 @@ public class GenericUIFunctions extends Report {
 	}
 	
 	
+	public void moveToElement(WebElement element,String objName) throws IOException
+	{
+		try
+		{
+			wait.until(ExpectedConditions.visibilityOf(element));
+			actions.moveToElement(element).build().perform();;
+			
+			log.info("Hovered element "+objName);
+			testStatus("info","Hovered element "+objName, "Not req");
+	
+		}
+		catch(Exception e)
+		{
+			log.error(e.getMessage());
+			testStatus("fail",  e.getMessage(),  takeScreenshot());
+			testStatus("log", e.getMessage(), "Not req");
+		}
+	}
+	
+	public WebElement retrieveSelectedOption(WebElement ele, String objectName) throws IOException
+	{
+		
+		try
+		{
+			wait.until(ExpectedConditions.elementToBeClickable(ele));
+			select = new Select(ele);
+			firstSelectedOption =	select.getFirstSelectedOption();
+			log.info("First selected option retreived"+objectName);
+			testStatus("info","First selected option retreived"+objectName, "Not req");
+		}
+		catch(Exception e)
+		{
+			log.error(e.getMessage());
+			testStatus("fail",  e.getMessage(),  takeScreenshot());
+			testStatus("log", e.getMessage(), "Not req");
+		}
+		return firstSelectedOption;
+	}
+	
+	public void selectValueFromList(WebElement ele,String option,String objectName) throws IOException
+	{
+		try
+		{
+			wait.until(ExpectedConditions.elementToBeClickable(ele));
+			select = new Select(ele);
+			select.selectByVisibleText(option);
+			log.info("Option "+option+"is selected for "+objectName+" dropdown");
+			testStatus("info","Option "+option+"is selected for "+objectName+" dropdown", "Not req");
+		}
+		catch(Exception e)
+		{
+			log.error(e.getMessage());
+			testStatus("fail",  e.getMessage(),  takeScreenshot());
+			testStatus("log", e.getMessage(), "Not req");
+		}
+	}
 }
