@@ -81,7 +81,7 @@ public class DriverFactory {
 			driverTl.set(driver);
 			log.info("Edge browser initialized");
 			break;
-		case "chromeGitHubActions":
+		case "chromegithubactions":
 			ChromeOptions cp = new ChromeOptions();
 			cp.addArguments("--headless");
 			cp.addArguments("--disable-gpu");
