@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -79,6 +80,17 @@ public class DriverFactory {
 			driver = new EdgeDriver();
 			driverTl.set(driver);
 			log.info("Edge browser initialized");
+			break;
+		case "chromeGitHubActions":
+			ChromeOptions cp = new ChromeOptions();
+			cp.addArguments("--headless");
+			cp.addArguments("--disable-gpu");
+			cp.addArguments("--no-sandbox");
+			
+			WebDriverManager.chromedriver().setup();
+			driver = new ChromeDriver(cp);
+			driverTl.set(driver);
+			log.info("Chrome Browser initialized");
 			break;
 		default:
 			System.out.println("Please pass correct browser name");
